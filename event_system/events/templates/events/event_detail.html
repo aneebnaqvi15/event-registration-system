@@ -1,0 +1,40 @@
+{% extends 'events/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-body">
+            <h1 class="card-title">{{ event.title }}</h1>
+            <p class="card-text">{{ event.description }}</p>
+            <p>
+                <strong>Date:</strong> {{ event.date }}<br>
+                <strong>Location:</strong> {{ event.location }}<br>
+                <strong>Spots remaining:</strong> {{ event.spots_remaining }}
+            </p>
+            
+            {% if user.is_authenticated %}
+                {% if is_registered %}
+                    <div class="alert alert-info">
+                        You are registered for this event!
+                    </div>
+                {% else %}
+                    {% if event.spots_remaining > 0 %}
+                        <form method="post" action="{% url 'register_event' event.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary">Register for Event</button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            Sorry, this event is full.
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                <div class="alert alert-info">
+                    Please <a href="{% url 'admin:login' %}?next={{ request.path }}">login</a> to register for this event.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

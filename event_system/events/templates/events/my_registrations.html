@@ -1,0 +1,45 @@
+{% extends 'events/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">My Registrations</h1>
+    
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    {% if registrations %}
+        <div class="row">
+            {% for registration in registrations %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ registration.event.title }}</h5>
+                            <p class="card-text">
+                                <strong>Date:</strong> {{ registration.event.date }}<br>
+                                <strong>Location:</strong> {{ registration.event.location }}<br>
+                                <strong>Registered on:</strong> {{ registration.registration_date }}
+                            </p>
+                            <form method="post" action="{% url 'cancel_registration' registration.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Cancel Registration</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            You haven't registered for any events yet.
+            <a href="{% url 'event_list' %}" class="alert-link">Browse available events</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
